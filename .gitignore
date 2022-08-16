@@ -1,18 +1,24 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
+# client
+/client/node_modules
+/client/.env
+/client/requestImages
+
+
+# server
+/server/node_modules
+/server/.env
+
+
 # dependencies
 /node_modules
 /.pnp
 .pnp.js
 
-# testing
-/coverage
 
 # production
 /build
-
-# working images
-/requestImages
 
 # misc
 .DS_Store
