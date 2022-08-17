@@ -9,16 +9,8 @@ function StudentList(){
   const [token, setToken] = useState(null)
   const [schools, setSchools] = useState([])
   const [student, setStudent] = useState(null)
+  const [userUUID, setUserUUID] = useState(null)
   
-  /*
-  const getToken = async () => {
-    if (sessionStorage.getItem('token')) {
-      setToken(sessionStorage.getItem('token'))
-    }else{
-      setToken(await requestToken())
-    }
-  }
-  */
   
   const getToken = async () => {
     setToken(await requestToken())
@@ -34,9 +26,10 @@ function StudentList(){
     // get user uuid from token username (school district email)
     // maybe should do on server side?
     
-
+    /*
 
     const schoolsUrl = "focus/api/1.0/schools"
+    const uuid = 'focus/api/1.0/users'
 
     let headers = new Headers()
     headers.append("Authorization", "Bearer " + token)
@@ -45,6 +38,7 @@ function StudentList(){
       headers: headers,
       redirect: 'follow'
     }
+    */
     /*
     fetch(schoolsUrl, requestOptions)
       .then(response => response.text())
@@ -59,8 +53,8 @@ function StudentList(){
   }
   
   const bearer = "Bearer " + token
-  console.log('bearer: ', bearer)
-  console.log('schools: ', schools)
+  console.log('studentList.jsx bearer: ', bearer)
+  console.log('studentList.jsx schools: ', schools)
 
   // if bearer token is available send request to focus API
 
@@ -71,8 +65,8 @@ function StudentList(){
   
 
   
-  console.log('accounts: ', accounts)
-  console.log('token: ', token)
+  console.log('studentList.jsx accounts: ', accounts)
+  console.log('studentList.jsx token: ', token)
   //console.log('setToken: ', token)
   //console.log('token', token)
 

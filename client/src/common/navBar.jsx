@@ -3,7 +3,7 @@ import { useIsAuthenticated } from "@azure/msal-react";
 import SignOutButton from '../components/signOutButton'
 
 const NavBar = (props) => {
-  const isAuth = useIsAuthenticated();
+  const isAuth = useIsAuthenticated()
 
   return(
     <>
@@ -11,9 +11,11 @@ const NavBar = (props) => {
         <div className="container-fluid">
           <span className="navbar-brand">Communications Log</span>
           <div className="d-flex" role="">
-          <span className="navbar-text mx-3">Dana Fusco</span>
             {isAuth && (
-              <SignOutButton />
+              <>
+                <span className="navbar-text mx-3">Dana Fusco</span>
+                <SignOutButton />
+              </>
             )}
           </div>
         </div>
