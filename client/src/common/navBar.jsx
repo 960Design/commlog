@@ -5,6 +5,8 @@ import SignOutButton from '../components/signOutButton'
 const NavBar = (props) => {
   const isAuth = useIsAuthenticated()
 
+  //console.log('navBar props: ', props)
+
   return(
     <>
       <nav className="navbar bg-light">

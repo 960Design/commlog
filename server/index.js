@@ -5,6 +5,11 @@ const cors = require('cors')
 require('dotenv').config()
 
 const app = express()
+const FOCUS_API_URL = process.env.REACT_APP_FOCUS_API_URL
+const FOCUS_DEV_API_URL = process.env.REACT_APP_FOCUS_DEV_API_URL
+let accessToken = ''
+
+
 
 // Enable cors
 app.use(cors())
@@ -13,6 +18,47 @@ app.use(cors())
 app.get('/', (req, res) => {
   res.json('hi!')
 })
+
+app.get('/sections/:uuid', async (req, res) => {
+  const uuid = req.params.uuid
+  const requestOptions = {
+    method: 'GET',
+    headers: {'Authorization': 'Bearer ' + accessToken},
+    redirect: 'follow'
+  }
+  //section_uuid from /users/:uuid/enrollements
+  try{
+    const response = await fetch(FOCUS_API_URL + `/users/${uuid}/enrollments`, requestOptions)
+    const result = await response.json()
+    res.status(200).json(result)
+  }
+  catch(e){
+    res.status(500).json({e})
+  }
+})
+
+
+app.get('/users/:username', async (req, res) => {
+  const username = req.params.username
+  const requestOptions = {
+    method: 'GET',
+    headers: {'Authorization': 'Bearer ' + accessToken},
+    redirect: 'follow'
+  }
+  try{
+    const response = await fetch(FOCUS_API_URL + `/users?filter=username=${username}`, requestOptions)
+    const result = await response.json()
+    res.status(200).json(result)
+  }
+  catch(e){
+    res.status(500).json({e})
+  }
+  
+})
+///users?filter=username=first.last@schools.com
+//const username = req.params.username
+//res.json(`username = ${username}`)
+
 
 app.get('/token', async (req, res) => {
   /**
@@ -34,30 +80,23 @@ app.get('/token', async (req, res) => {
   */
  /* "proxy": "https://okaloosa.focusschoolsoftware.com", */
   
-  const FOCUS_API_URL = process.env.REACT_APP_FOCUS_API_URL
-  const FOCUS_DEV_API_URL = process.env.REACT_APP_FOCUS_DEV_API_URL
-  const HEADER_AUTH = process.env.REACT_APP_FSS_HEADER_AUTHORIZATION
-  
-  const headers = new Headers()
-  headers.append('Authorization', HEADER_AUTH)
-  headers.append('Content-Type', 'application/x-www-form-urlencoded')
-  
-  const urlencoded = new URLSearchParams()
-  urlencoded.append("grant_type", "client_credentials");
-  
   const requestOptions = {
     method: 'POST',
-    headers: headers,
-    body: urlencoded,
+    headers: {
+      'Authorization': process.env.REACT_APP_FSS_HEADER_AUTHORIZATION,
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    body: 'grant_type=client_credentials',
     redirect: 'follow'
-  } 
+  }
   
   try{
-    const response = await fetch(FOCUS_API_URL, requestOptions)
+    const response = await fetch(FOCUS_API_URL + '/token', requestOptions)
     const result = await response.json()
+    if (result.access_token) {
+      accessToken = result.access_token
+    }
     res.status(200).json(result)
-    // set sessionStorage on client side
-    //sessionStorage.setItem('token', result.access_token)
   }
   catch(e){
     res.status(500).json({e})

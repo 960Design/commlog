@@ -1,6 +1,8 @@
 import React, {useState, useEffect} from 'react'
 import { useMsal } from '@azure/msal-react'
 import { requestToken } from '../services/tokenRequest'
+import { getUsers } from '../services/getUsers'
+import { getSections } from '../services/getSections'
 import SearchBox from '../common/searchBox'
 import CommunicationLog from './communicationLog'
 
@@ -10,47 +12,97 @@ function StudentList(){
   const [schools, setSchools] = useState([])
   const [student, setStudent] = useState(null)
   const [userUUID, setUserUUID] = useState(null)
-  
-  
-  const getToken = async () => {
-    setToken(await requestToken())
+  const [user, setUser] = useState('')
+  const [sections, setSections] = useState([])
+
+  /*
+  const list = async (userid) => {
+    //const url = new URL(`https://jsonplaceholder.typicode.com/users/${userid}`)
+    const url = `https://jsonplaceholder.typicode.com/users/${userid}`
+    let data = await ( await fetch(url).catch(handleErr)).json()
+    console.log('data: ', data)
+    console.log('uuid: ', data.id)
+    console.log('student: ', data.name)
+    //setUserUUID(data.id)
+    //setStudent(data.name)
+    setName(data.name)
   }
+  function handleErr(err){
+    console.error(err)
+  }
+  //list(2)
+  */
+
+  
+  
+
   useEffect(() => {
-    getToken()
+    requestToken().then(data => setToken(data))
   }, [])
 
-  if(!sessionStorage.getItem('token')) {return <div>Loading...</div>}
+  /*
+  useEffect(() => {
+    getData(someParam).then(data => setState(data))
+  }, [someParam]) 
+  */
+
+  useEffect(() => {
+    /* LIVE
+    getUsers(accounts[0].username).then(data => setUser(data))
+    */
+   /* TEST */
+   //const test = "holmanm@okaloosaschools.com"
+   getUsers("holmanm@okaloosaschools.com").then(data => setUser(data))
+  }, [accounts])
+
+
+  // if teacher get current sections and students from each section
+  //if (typeof myVar !== 'undefined')
+  //if(user && user.data[0].role === 'teacher'){
+  if(!user) { return <div>Loading user...</div>}
+
+  if(user && user.data[0].role === 'teacher'){
+    console.log('user: ', user)
+    console.log('user.data[0].uuid: ' + user.data[0].uuid)
+    console.log('user first last name: ' + user.data[0].first_name + " " + user.data[0].last_name)
+    console.log('user active: ' + user.data[0].active)
+    console.log('user role: ' + user.data[0].role)
+    //getSections(user.data[0].uuid).then(data => setSections(data))
+    console.log('sections: ' + sections)
+
+
+  }
+
+  if(!sessionStorage.getItem('token')) {return <div>Loading token...</div>}
+  
 
   // if bearer token is available send request to focus API
   if(token){
     // get user uuid from token username (school district email)
     // maybe should do on server side?
+    //setUserUUID( fetch('http://localhost:8000/uuid') )
     
+
     /*
-
-    const schoolsUrl = "focus/api/1.0/schools"
-    const uuid = 'focus/api/1.0/users'
-
-    let headers = new Headers()
-    headers.append("Authorization", "Bearer " + token)
-    let requestOptions = {
-      method: 'GET',
-      headers: headers,
-      redirect: 'follow'
+    // username is mic
+    const getUser = async (username) => {
+      //const url = new URL(`https://jsonplaceholder.typicode.com/users/${userid}`)
+      const url = `https://okaloosa.focusschoolsoftware.com/focus/api/1.0/users?filter=username=${username}`
+      let data = await ( await fetch(url).catch(handleErr)).json()
+      console.log('data: ', data)
+      //setUserUUID(data.id)
+      //setStudent(data.name)
+      //setName(data.name)
     }
     */
-    /*
-    fetch(schoolsUrl, requestOptions)
-      .then(response => response.text())
-      //.then(result => console.log('schoolResult: ', result))
-      .then(result => setSchools(result))
-      .catch(error => console.log('error', error));
+    //getUsers(accounts[0].username)
+    //setName()
+    //console.log('getUsers = ' + getUsers(accounts[0].username))
 
-    //let response = await fetch(schoolsUrl, requestOptions)
-    //let result = await response.json()
-    */
-
+    
   }
+
+
   
   const bearer = "Bearer " + token
   console.log('studentList.jsx bearer: ', bearer)
@@ -67,6 +119,7 @@ function StudentList(){
   
   console.log('studentList.jsx accounts: ', accounts)
   console.log('studentList.jsx token: ', token)
+  console.log('studentList.jsx account username: ', accounts[0].username)
   //console.log('setToken: ', token)
   //console.log('token', token)
 
@@ -104,7 +157,7 @@ function StudentList(){
             <td>10 Aug 2021</td>
           </tr>
           <tr>
-            <td>William Henry Harrison</td>
+            <td>Tester</td>
             <td>11</td>
             <td>0211</td>
             <td>Niceville High</td>
