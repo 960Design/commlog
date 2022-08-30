@@ -9,14 +9,27 @@ const FOCUS_API_URL = process.env.REACT_APP_FOCUS_API_URL
 const FOCUS_DEV_API_URL = process.env.REACT_APP_FOCUS_DEV_API_URL
 let accessToken = ''
 
-
-
 // Enable cors
 app.use(cors())
 
 
 app.get('/', (req, res) => {
   res.json('hi!')
+})
+
+app.get('/students/:uuid', async (requ, res) => {
+  const uuid = req.params.uuid
+  const requestOption = {
+    method: 'GET',
+    headers: {'Authorization': 'Bearer ' + accessToken},
+    redirect: 'follow'
+  }
+  try{
+
+  }
+  catch(e){
+    res.status(500).json({e})
+  }
 })
 
 app.get('/sections/:uuid', async (req, res) => {
